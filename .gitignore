@@ -87,3 +87,4 @@ appsettings.Production.json
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+backend/src/QQuote.Insurance.API/appsettings.json
