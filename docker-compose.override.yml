@@ -1,0 +1,20 @@
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    volumes:
+      - ./backend:/app/source
+
+  frontend:
+    build:
+      target: build
+    volumes:
+      - ./frontend/qquote-insurance-ui:/app
+      - /app/node_modules
+    command: ["npm", "start"]
+    ports:
+      - "4200:4200"

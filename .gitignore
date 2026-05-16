@@ -1,0 +1,89 @@
+# ─── .NET ────────────────────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+_ReSharper*/
+*.DotSettings.user
+*.ncrunch*
+[Tt]emp/
+[Ll]ogs/
+[Ll]og/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Publish output
+publish/
+[Pp]ublish/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+coverage.json
+coverage.opencover.xml
+coverage.cobertura.xml
+TestResults/
+
+# Entity Framework migrations (keep the folder, ignore snapshots if generated)
+# Uncomment below if you want to ignore migration snapshots:
+# **/Migrations/*Snapshot.cs
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# ─── Angular / Node ──────────────────────────────────────────────────────────
+node_modules/
+dist/
+tmp/
+out-tsc/
+.angular/cache/
+npm-debug.log*
+yarn-error.log*
+.sass-cache/
+coverage/
+testem.log
+*.js.map
+
+# ─── Docker ──────────────────────────────────────────────────────────────────
+.docker/
+
+# ─── Environment / Secrets ───────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pfx
+*.p12
+*.pem
+secrets.json
+appsettings.Production.json
+
+# ─── IDE / Editors ───────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/
+*.swp
+*.swo
+*~
+
+# ─── OS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/

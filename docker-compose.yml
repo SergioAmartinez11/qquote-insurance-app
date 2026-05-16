@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: qquote-postgres
+    environment:
+      POSTGRES_DB: qquote_insurance
+      POSTGRES_USER: qquote_user
+      POSTGRES_PASSWORD: qquote_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - qquote-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qquote_user -d qquote_insurance"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
+    container_name: qquote-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=qquote_insurance;Username=qquote_user;Password=qquote_pass
+    ports:
+      - "5000:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qquote-network
+
+  frontend:
+    build:
+      context: ./frontend/qquote-insurance-ui
+      dockerfile: ../../docker/frontend.Dockerfile
+    container_name: qquote-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    networks:
+      - qquote-network
+
+volumes:
+  postgres_data:
+
+networks:
+  qquote-network:
+    driver: bridge

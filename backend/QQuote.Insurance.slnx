@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/QQuote.Insurance.API/QQuote.Insurance.API.csproj" />
+    <Project Path="src/QQuote.Insurance.Application/QQuote.Insurance.Application.csproj" />
+    <Project Path="src/QQuote.Insurance.Domain/QQuote.Insurance.Domain.csproj" />
+    <Project Path="src/QQuote.Insurance.Infrastructure/QQuote.Insurance.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/QQuote.Insurance.Application.UnitTests/QQuote.Insurance.Application.UnitTests.csproj" />
+    <Project Path="tests/QQuote.Insurance.Domain.UnitTests/QQuote.Insurance.Domain.UnitTests.csproj" />
+    <Project Path="tests/QQuote.Insurance.Integration.Tests/QQuote.Insurance.Integration.Tests.csproj" />
+  </Folder>
+</Solution>
