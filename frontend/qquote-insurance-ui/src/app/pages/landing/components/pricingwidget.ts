@@ -41,6 +41,7 @@ import { RippleModule } from 'primeng/ripple';
                 pRipple
                 label="Get Started"
                 class="p-button-rounded border-0 ml-4 font-light leading-tight bg-blue-500 text-white"
+                routerLink="/auth/login"
               ></button>
             </div>
             <p-divider class="w-full bg-surface-200"></p-divider>
@@ -90,6 +91,7 @@ import { RippleModule } from 'primeng/ripple';
                 pRipple
                 label="Get Started"
                 class="p-button-rounded border-0 ml-4 font-light leading-tight bg-blue-500 text-white"
+                routerLink="/auth/login"
               ></button>
             </div>
             <p-divider class="w-full bg-surface-200"></p-divider>
@@ -139,6 +141,7 @@ import { RippleModule } from 'primeng/ripple';
                 pRipple
                 label="Get Started"
                 class="p-button-rounded border-0 ml-4 font-light leading-tight bg-blue-500 text-white"
+                routerLink="/auth/login"
               ></button>
             </div>
             <p-divider class="w-full bg-surface-200"></p-divider>

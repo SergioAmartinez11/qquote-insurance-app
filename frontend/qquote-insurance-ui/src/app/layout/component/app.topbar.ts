@@ -10,6 +10,7 @@ import { AppConfigurator } from './app.configurator';
 import { LayoutService } from '@/app/layout/service/layout.service';
 import { Menubar } from "primeng/menubar";
 import { Menu } from "primeng/menu";
+import { AuthService } from '@/app/core/services/auth.service';
 
 @Component({
     selector: 'app-topbar',
@@ -122,6 +123,7 @@ import { Menu } from "primeng/menu";
 
 export class AppTopbar {
     layoutService = inject(LayoutService);
+    private authService = inject(AuthService);
     private router = inject(Router);
     userProfileMenu: MenuItem[] = [
         {
@@ -137,6 +139,7 @@ export class AppTopbar {
         }
     ];
     logout() {
+        this.authService.logout();
         this.router.navigate(['/auth/login']);
     }
  
