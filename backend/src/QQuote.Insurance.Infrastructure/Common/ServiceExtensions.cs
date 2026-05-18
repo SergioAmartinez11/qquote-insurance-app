@@ -47,7 +47,7 @@ public static class ServiceExtensions
 
         services.AddHttpClient<IRiskAssessmentService, ClaudeRiskAssessmentService>(client =>
         {
-            client.DefaultRequestHeaders.Add("x-api-key",         config["Claude:ApiKey"]);
+            client.DefaultRequestHeaders.Add("x-api-key",         config["ClaudeApiKey"]);
             client.DefaultRequestHeaders.Add("anthropic-version", "2023-06-01");
         });
 

@@ -37,7 +37,7 @@ public class GlobalExceptionMiddleware
         catch (Exception ex)
         {
             ctx.Response.StatusCode = 500;
-            await ctx.Response.WriteAsJsonAsync(new { error = "Unexpected error.", detail = ex.Message });
+            await ctx.Response.WriteAsJsonAsync(new { error = "Unexpected error.", detail = ex.Message + ex.InnerException });
         }
     }
 }
