@@ -19,7 +19,19 @@ public static class ServiceExtensions
         IConfiguration          config)
     {
         services.AddDbContext<InsuranceDbContext>(opts =>
-            opts.UseNpgsql(config.GetConnectionString("DefaultConnection")));
+        {
+            var rawConn = config.GetConnectionString("DefaultConnection") ?? "";
+
+            if (rawConn.StartsWith("postgresql://") || rawConn.StartsWith("postgres://"))
+            {
+                var uri = new Uri(rawConn);
+                rawConn = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};" +
+                          $"Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};" +
+                          $"SSL Mode=Require;Trust Server Certificate=true";
+            }
+
+            opts.UseNpgsql(rawConn);
+        });
 
         services.AddScoped<IQuoteRepository,    QuoteRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
