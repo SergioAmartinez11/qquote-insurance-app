@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CreateQuoteRequest {
   vehicleMake: string;
@@ -27,7 +28,7 @@ export interface QuoteResponse {
 
 @Injectable({ providedIn: 'root' })
 export class QuoteService {
-  private readonly apiUrl = 'http://localhost:5001/api/quotes';
+  private readonly apiUrl = `${environment.apiUrl}/api/quotes`;
 
   constructor(private http: HttpClient) {}
 

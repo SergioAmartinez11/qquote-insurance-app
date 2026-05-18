@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface CreateClaimRequest {
   policyId: string;
@@ -19,7 +20,7 @@ export interface ClaimResponse {
 
 @Injectable({ providedIn: 'root' })
 export class ClaimService {
-  private readonly apiUrl = 'http://localhost:5001/api/claims';
+  private readonly apiUrl = `${environment.apiUrl}/api/claims`;
 
   constructor(private http: HttpClient) {}
 

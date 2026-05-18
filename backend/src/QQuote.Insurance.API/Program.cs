@@ -38,9 +38,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
-        policy.WithOrigins("http://localhost:4200", "http://localhost:4201")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+        policy.SetIsOriginAllowed(origin =>
+        {
+            var host = new Uri(origin).Host;
+            return host == "localhost" || host.EndsWith(".vercel.app");
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod());
 });
 
 var app = builder.Build();
