@@ -68,7 +68,7 @@ testem.log
 *.p12
 *.pem
 secrets.json
-appsettings.Production.json
+# appsettings.Development.json is ignored below (per-project); appsettings.Production.json is committed with safe placeholders
 
 # ─── IDE / Editors ───────────────────────────────────────────────────────────
 .vscode/*
@@ -87,5 +87,4 @@ appsettings.Production.json
 Thumbs.db
 Desktop.ini
 $RECYCLE.BIN/
-backend/src/QQuote.Insurance.API/appsettings.json
 backend/src/QQuote.Insurance.API/appsettings.Development.json

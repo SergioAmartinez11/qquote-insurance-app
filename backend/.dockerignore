@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.idea/
+**/*.user
+**/*.suo
+**/TestResults/
+.git/
+.gitignore
+src/QQuote.Insurance.API/appsettings.Development.json
