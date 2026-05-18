@@ -180,7 +180,7 @@
                     <div class="flex items-center" [class.flex-1]="!last">
                         <div class="flex flex-col items-center gap-1">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                                 [class]="isStepReached(selectedClaim.status, step)
+                                 [ngClass]="isStepReached(selectedClaim.status, step)
                                      ? 'bg-primary text-white'
                                      : 'bg-surface-200 dark:bg-surface-700 text-muted-color'">
                                 <i [class]="stepIcon(step)"></i>
@@ -191,7 +191,7 @@
                         </div>
                         @if (!last) {
                             <div class="flex-1 h-0.5 mx-1 mb-5"
-                                 [class]="isStepReached(selectedClaim.status, step)
+                                 [ngClass]="isStepReached(selectedClaim.status, step)
                                      ? 'bg-primary'
                                      : 'bg-surface-200 dark:bg-surface-700'"></div>
                         }

@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -27,6 +27,7 @@ import { ToastService } from '../../core/services/toast.service';
     DividerModule,
     DecimalPipe,
     DatePipe,
+    NgClass,
   ],
   templateUrl: './policies.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
