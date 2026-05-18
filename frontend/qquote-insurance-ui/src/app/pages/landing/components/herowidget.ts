@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'hero-widget',
-  imports: [ButtonModule, RippleModule],
+  imports: [ButtonModule, RippleModule, RouterLink],
   template: `
     <div
       id="hero"
@@ -26,6 +27,7 @@ import { RippleModule } from 'primeng/ripple';
           type="button"
           label="Get Your Free Quote"
           class="text-xl! mt-8 px-4!"
+          routerLink="/auth/login"
         ></button>
       </div>
       <div class="flex justify-center md:justify-end">
