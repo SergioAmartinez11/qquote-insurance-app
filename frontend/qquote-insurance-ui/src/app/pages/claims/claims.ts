@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -33,6 +33,7 @@ import { ToastService } from '../../core/services/toast.service';
     DatePickerModule,
     TextareaModule,
     DatePipe,
+    NgClass,
   ],
   templateUrl: './claims.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

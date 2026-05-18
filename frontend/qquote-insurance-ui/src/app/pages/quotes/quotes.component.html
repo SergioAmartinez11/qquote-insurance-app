@@ -40,7 +40,7 @@
             <ng-template pTemplate="body" let-q>
                 <tr>
                     <td>
-                        <span class="font-semibold">{{ q.vehicleYear }} {{ q.vehicleMake }} {{ q.vehicleModel }}</span>
+                        <span class="font-semibold ">{{ q.vehicleYear }} {{ q.vehicleMake }} {{ q.vehicleModel }}</span>
                     </td>
                     <td>
                         <p-tag [value]="q.coverageType" severity="info" />
@@ -218,11 +218,11 @@
 
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Created</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">Created</span>
                     <p class="m-0 font-medium mt-1">{{ selectedQuote.createdAt | date:'medium' }}</p>
                 </div>
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Expires</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">Expires</span>
                     <p class="m-0 font-medium mt-1">{{ selectedQuote.expiresAt | date:'mediumDate' }}</p>
                 </div>
             </div>

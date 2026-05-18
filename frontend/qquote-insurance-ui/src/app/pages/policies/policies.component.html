@@ -47,7 +47,7 @@
             <ng-template pTemplate="body" let-p>
                 <tr>
                     <td>
-                        <span class="font-semibold">{{ p.vehicleYear }} {{ p.vehicleMake }} {{ p.vehicleModel }}</span>
+                        <span class="font-semibold ">{{ p.vehicleYear }} {{ p.vehicleMake }} {{ p.vehicleModel }}</span>
                     </td>
                     <td>
                         <p-tag [value]="p.coverageType" severity="info" />
@@ -64,7 +64,7 @@
                     </td>
                     <td>
                         @if (p.isActive) {
-                            <span [class]="daysRemaining(p.endDate) < 30
+                            <span [ngClass]="daysRemaining(p.endDate) < 30
                                 ? 'font-semibold text-orange-500'
                                 : 'text-surface-600 dark:text-surface-300'">
                                 {{ daysRemaining(p.endDate) }}d
@@ -120,10 +120,10 @@
 
             @if (selectedPolicy.isActive) {
                 <div class="flex items-center gap-3 p-4 rounded-xl"
-                     [class]="daysRemaining(selectedPolicy.endDate) < 30
+                     [ngClass]="daysRemaining(selectedPolicy.endDate) < 30
                          ? 'bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800'
                          : 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800'">
-                    <i [class]="daysRemaining(selectedPolicy.endDate) < 30
+                    <i [ngClass]="daysRemaining(selectedPolicy.endDate) < 30
                         ? 'pi pi-exclamation-triangle text-orange-500 text-xl'
                         : 'pi pi-check-circle text-green-500 text-xl'"></i>
                     <div>
@@ -141,11 +141,11 @@
 
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Start Date</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">Start Date</span>
                     <p class="m-0 font-medium mt-1">{{ selectedPolicy.startDate | date:'mediumDate' }}</p>
                 </div>
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">End Date</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">End Date</span>
                     <p class="m-0 font-medium mt-1">{{ selectedPolicy.endDate | date:'mediumDate' }}</p>
                 </div>
             </div>

@@ -10,6 +10,10 @@ export const appRoutes: Routes = [
     component: AppLayout,
     canActivate: [authGuard],
     children: [
+      {
+        path: '',
+        loadComponent: () => import('./app/pages/dashboard/dashboard').then((m) => m.Dashboard),
+      },
       { path: 'pages', loadChildren: () => import('./app/pages/pages.routes') },
       {
         path: 'quotes',
