@@ -183,7 +183,7 @@
                                  [ngClass]="isStepReached(selectedClaim.status, step)
                                      ? 'bg-primary text-white'
                                      : 'bg-surface-200 dark:bg-surface-700 text-muted-color'">
-                                <i [class]="stepIcon(step)"></i>
+                                <i [ngClass]="stepIcon(step)"></i>
                             </div>
                             <span class="text-xs text-muted-color text-center" style="width: 64px">
                                 {{ statusLabel(step) }}
@@ -212,11 +212,11 @@
 
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Filed On</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">Filed On</span>
                     <p class="m-0 font-medium mt-1">{{ selectedClaim.createdAt | date:'medium' }}</p>
                 </div>
                 <div>
-                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Claim ID</span>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold ">Claim ID</span>
                     <p class="m-0 font-mono text-xs mt-1 truncate">{{ selectedClaim.id }}</p>
                 </div>
             </div>

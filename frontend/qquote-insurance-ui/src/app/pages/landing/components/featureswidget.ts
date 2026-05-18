@@ -65,7 +65,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-map text-2xl! text-indigo-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl  font-semibold ">
               Trusted Partners
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -86,7 +86,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-id-card text-2xl! text-slate-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold ">
               24/7 Support
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -107,7 +107,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-star text-2xl! text-orange-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold ">
               Best Rates
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -128,7 +128,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-moon text-2xl! text-pink-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold " >
               Easy Management
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -149,7 +149,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-shopping-cart text-2xl! text-teal-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold " >
               Fast Claims
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -170,7 +170,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-globe text-2xl! text-blue-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold " >
               Digital First
             </div>
             <span class="text-surface-600 dark:text-surface-200"
@@ -191,7 +191,7 @@ import { CommonModule } from '@angular/common';
             >
               <i class="pi pi-fw pi-eye text-2xl! text-purple-700"></i>
             </div>
-            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold">
+            <div class="mt-6 mb-1 text-surface-900 dark:text-surface-0 text-xl font-semibold " >
               Data Security
             </div>
             <span class="text-surface-600 dark:text-surface-200"
