@@ -15,6 +15,7 @@ A full-stack vehicle insurance platform that lets customers get AI-powered quote
 | UI Library | PrimeNG 21, Tailwind CSS |
 | Auth | JWT Bearer tokens |
 | Container | Docker / Docker Compose |
+| LLM | Claude opus 4.6 / Sonnet 4.6 |
 
 ---
 
