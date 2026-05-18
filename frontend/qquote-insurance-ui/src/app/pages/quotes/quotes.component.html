@@ -1,0 +1,231 @@
+<div class="card">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 m-0">My Quotes</h2>
+            <p class="text-muted-color mt-1 mb-0">Request a new quote or view your existing AI-powered assessments</p>
+        </div>
+        <p-button label="Get New Quote" icon="pi pi-plus" (onClick)="openCreateDialog()" />
+    </div>
+
+    @if (!loading && quotes.length === 0) {
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+            <div style="border-radius: 50%; background: var(--surface-100); width: 80px; height: 80px;"
+                 class="flex items-center justify-center mb-5 dark:bg-surface-800">
+                <i class="pi pi-file-edit text-3xl text-muted-color"></i>
+            </div>
+            <h3 class="text-surface-900 dark:text-surface-0 text-xl font-semibold mb-2">No quotes yet</h3>
+            <p class="text-muted-color mb-5 max-w-xs">Get an AI-powered insurance quote for your vehicle in seconds.</p>
+            <p-button label="Get Your First Quote" icon="pi pi-plus" (onClick)="openCreateDialog()" />
+        </div>
+    }
+
+    @if (loading || quotes.length > 0) {
+        <p-table
+            [value]="quotes"
+            [loading]="loading"
+            [paginator]="quotes.length > 10"
+            [rows]="10"
+            responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Coverage</th>
+                    <th>Monthly Premium</th>
+                    <th>Risk</th>
+                    <th>Status</th>
+                    <th>Expires</th>
+                    <th style="width: 3rem"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-q>
+                <tr>
+                    <td>
+                        <span class="font-semibold">{{ q.vehicleYear }} {{ q.vehicleMake }} {{ q.vehicleModel }}</span>
+                    </td>
+                    <td>
+                        <p-tag [value]="q.coverageType" severity="info" />
+                    </td>
+                    <td>
+                        <span class="font-bold text-primary">{{ q.currency }} {{ q.monthlyPremium | number:'1.2-2' }}</span>
+                        <span class="text-muted-color text-sm"> /mo</span>
+                    </td>
+                    <td>
+                        <p-tag [value]="q.riskLevel" [severity]="riskSeverity(q.riskLevel)" />
+                    </td>
+                    <td>
+                        <p-tag [value]="q.status" [severity]="statusSeverity(q.status)" />
+                    </td>
+                    <td class="text-surface-600 dark:text-surface-300 text-sm">
+                        {{ q.expiresAt | date:'mediumDate' }}
+                    </td>
+                    <td>
+                        <div class="flex gap-1">
+                            @if (q.status === 'Active') {
+                                <p-button
+                                    icon="pi pi-shield"
+                                    [text]="true"
+                                    severity="success"
+                                    size="small"
+                                    [loading]="convertingIds.has(q.id)"
+                                    (onClick)="convertToPolicy(q)"
+                                    pTooltip="Convert to policy"
+                                    tooltipPosition="left" />
+                            }
+                            <p-button icon="pi pi-eye" [text]="true" severity="secondary" size="small"
+                                      (onClick)="viewDetail(q)" pTooltip="View details" tooltipPosition="left" />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
+</div>
+
+<!-- ─── Create Quote Dialog ─────────────────────────────────────────────── -->
+<p-dialog
+    header="Get a New Quote"
+    [(visible)]="showCreateDialog"
+    [modal]="true"
+    [style]="{width: '480px', minHeight: '480px'}"
+    [draggable]="false"
+    [closable]="!creating">
+
+    <div class="flex flex-col gap-5 pt-2">
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-1 flex-1">
+                <label class="font-medium text-surface-900 dark:text-surface-0">
+                    Make <span class="text-red-400">*</span>
+                </label>
+                <input pInputText [(ngModel)]="form.vehicleMake" placeholder="Toyota" [disabled]="creating" />
+            </div>
+            <div class="flex flex-col gap-1 flex-1">
+                <label class="font-medium text-surface-900 dark:text-surface-0">
+                    Model <span class="text-red-400">*</span>
+                </label>
+                <input pInputText [(ngModel)]="form.vehicleModel" placeholder="Camry" [disabled]="creating" />
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="font-medium text-surface-900 dark:text-surface-0">
+                Year <span class="text-red-400">*</span>
+            </label>
+            <p-inputnumber
+                [(ngModel)]="form.vehicleYear"
+                [min]="1990"
+                [max]="2026"
+                [useGrouping]="false"
+                [fluid]="true"
+                [disabled]="creating" />
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex flex-col gap-1 flex-1">
+                <label class="font-medium text-surface-900 dark:text-surface-0">Coverage Type</label>
+                <p-select
+                    [(ngModel)]="form.coverageType"
+                    [options]="coverageOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [fluid]="true"
+                    [disabled]="creating" />
+            </div>
+            <div class="flex flex-col gap-1" style="width: 150px">
+                <label class="font-medium text-surface-900 dark:text-surface-0">Currency</label>
+                <p-select
+                    [(ngModel)]="form.currency"
+                    [options]="currencyOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [fluid]="true"
+                    [disabled]="creating" />
+            </div>
+        </div>
+
+        @if (creating) {
+            <div class="flex items-center gap-3 p-4 border border-primary-200 rounded-lg bg-primary-50 dark:bg-primary-950 dark:border-primary-800">
+                <i class="pi pi-spin pi-spinner text-primary text-xl"></i>
+                <div>
+                    <p class="font-semibold m-0 text-sm text-surface-900 dark:text-surface-0">
+                        AI is assessing your vehicle risk...
+                    </p>
+                    <p class="text-muted-color m-0 text-xs mt-1">This may take a few seconds</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" [text]="true" severity="secondary"
+                  (onClick)="showCreateDialog = false" [disabled]="creating" />
+        <p-button label="Get Quote" icon="pi pi-sparkles"
+                  (onClick)="submitCreate()" [loading]="creating" />
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Quote Detail Dialog ──────────────────────────────────────────────── -->
+<p-dialog
+    header="Quote Details"
+    [(visible)]="showDetailDialog"
+    [modal]="true"
+    [style]="{width: '520px'}"
+    [draggable]="false">
+
+    @if (selectedQuote) {
+        <div class="flex flex-col gap-4 pt-2">
+
+            <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800">
+                <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Vehicle</span>
+                <p class="text-xl font-bold text-surface-900 dark:text-surface-0 mt-1 mb-0">
+                    {{ selectedQuote.vehicleYear }} {{ selectedQuote.vehicleMake }} {{ selectedQuote.vehicleModel }}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800">
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Monthly Premium</span>
+                    <p class="text-2xl font-bold text-primary mt-1 mb-0">
+                        {{ selectedQuote.currency }} {{ selectedQuote.monthlyPremium | number:'1.2-2' }}
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800 flex flex-col gap-2">
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Coverage / Risk</span>
+                    <div class="flex gap-2 flex-wrap mt-1">
+                        <p-tag [value]="selectedQuote.coverageType" severity="info" />
+                        <p-tag [value]="selectedQuote.riskLevel" [severity]="riskSeverity(selectedQuote.riskLevel)" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <span class="text-muted-color text-sm">Status</span>
+                <p-tag [value]="selectedQuote.status" [severity]="statusSeverity(selectedQuote.status)" />
+            </div>
+
+            <p-divider />
+
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="pi pi-sparkles text-primary"></i>
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">AI Risk Assessment</span>
+                </div>
+                <p class="text-surface-700 dark:text-surface-300 leading-relaxed m-0 text-sm">
+                    {{ selectedQuote.riskExplanation }}
+                </p>
+            </div>
+
+            <p-divider />
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Created</span>
+                    <p class="m-0 font-medium mt-1">{{ selectedQuote.createdAt | date:'medium' }}</p>
+                </div>
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Expires</span>
+                    <p class="m-0 font-medium mt-1">{{ selectedQuote.expiresAt | date:'mediumDate' }}</p>
+                </div>
+            </div>
+        </div>
+    }
+</p-dialog>

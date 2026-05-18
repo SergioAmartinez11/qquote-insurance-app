@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { DividerModule } from 'primeng/divider';
@@ -12,12 +12,12 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [
     ButtonModule,
-    CheckboxModule,
     InputTextModule,
+    InputNumberModule,
     PasswordModule,
     FormsModule,
     RouterModule,
@@ -25,12 +25,14 @@ import { ToastService } from '../../../core/services/toast.service';
     DividerModule,
     AppFloatingConfigurator,
   ],
-  templateUrl: './login.component.html',
+  templateUrl: './register.component.html',
 })
-export class Login {
+export class Register {
+  fullName: string = '';
   email: string = '';
   password: string = '';
-  checked: boolean = false;
+  age: number | null = null;
+  zipCode: string = '';
   loading: boolean = false;
 
   constructor(
@@ -39,28 +41,32 @@ export class Login {
     private toast: ToastService,
   ) {}
 
-  onLogin(): void {
-    if (!this.email || !this.password) {
-      this.toast.warn('Email and password are required.');
+  onRegister(): void {
+    if (!this.fullName || !this.email || !this.password || !this.age || !this.zipCode) {
+      this.toast.warn('All fields are required.');
       return;
     }
 
     this.loading = true;
 
-    this.authService.login({ email: this.email, password: this.password }).subscribe({
-      next: () => {
-        this.loading = false;
-        this.toast.success('Welcome back!', 'Signed in');
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.toast.fromHttpError(err, 'Invalid credentials. Please try again.');
-      },
-    });
-  }
-
-  signInWithGoogle(): void {
-    console.log('Sign in with Google clicked');
+    this.authService
+      .register({
+        fullName: this.fullName,
+        email: this.email,
+        password: this.password,
+        age: this.age,
+        zipCode: this.zipCode,
+      })
+      .subscribe({
+        next: () => {
+          this.loading = false;
+          this.toast.success('Your account has been created.', 'Registered');
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.toast.fromHttpError(err, 'Registration failed. Please try again.');
+        },
+      });
   }
 }

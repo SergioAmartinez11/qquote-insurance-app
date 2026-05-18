@@ -1,23 +1,50 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
-export interface LoginRequest  { email: string; password: string; }
-export interface LoginResponse { token: string; }
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string;
+  age: number;
+  zipCode: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  fullName: string;
+  email: string;
+  expiresAt: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-    login(credentials: LoginRequest): Observable<LoginResponse> {
-        if (credentials.email && credentials.password) {
-            return of({ token: 'mock-jwt-token' });
-        }
-        return throwError(() => new Error('Invalid credentials'));
-    }
+  private readonly apiUrl = 'http://localhost:5001/api/auth';
 
-    logout(): void {
-        localStorage.removeItem('token');
-    }
+  constructor(private http: HttpClient) {}
 
-    isAuthenticated(): boolean {
-        return !!localStorage.getItem('token');
-    }
+  register(request: RegisterRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/register`, request)
+      .pipe(tap((res) => localStorage.setItem('token', res.token)));
+  }
+
+  login(credentials: LoginRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, credentials)
+      .pipe(tap((res) => localStorage.setItem('token', res.token)));
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+  }
+
+  isAuthenticated(): boolean {
+    return !!localStorage.getItem('token');
+  }
 }

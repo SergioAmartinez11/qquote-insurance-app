@@ -1,0 +1,158 @@
+<div class="card">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 m-0">My Policies</h2>
+            <p class="text-muted-color mt-1 mb-0">Your active insurance coverage</p>
+        </div>
+        <p-button
+            label="Get a Quote"
+            icon="pi pi-plus"
+            severity="secondary"
+            [outlined]="true"
+            routerLink="/quotes" />
+    </div>
+
+    @if (!loading && policies.length === 0) {
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+            <div style="border-radius: 50%; background: var(--surface-100); width: 80px; height: 80px;"
+                 class="flex items-center justify-center mb-5 dark:bg-surface-800">
+                <i class="pi pi-shield text-3xl text-muted-color"></i>
+            </div>
+            <h3 class="text-surface-900 dark:text-surface-0 text-xl font-semibold mb-2">No policies yet</h3>
+            <p class="text-muted-color mb-5 max-w-xs">
+                Convert an active quote into a policy to get covered.
+            </p>
+            <p-button label="View My Quotes" icon="pi pi-file" routerLink="/quotes" />
+        </div>
+    }
+
+    @if (loading || policies.length > 0) {
+        <p-table
+            [value]="policies"
+            [loading]="loading"
+            [paginator]="policies.length > 10"
+            [rows]="10"
+            responsiveLayout="scroll">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Coverage</th>
+                    <th>Monthly Premium</th>
+                    <th>Status</th>
+                    <th>Renews</th>
+                    <th>Days Left</th>
+                    <th style="width: 3rem"></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-p>
+                <tr>
+                    <td>
+                        <span class="font-semibold">{{ p.vehicleYear }} {{ p.vehicleMake }} {{ p.vehicleModel }}</span>
+                    </td>
+                    <td>
+                        <p-tag [value]="p.coverageType" severity="info" />
+                    </td>
+                    <td>
+                        <span class="font-bold text-primary">{{ p.currency }} {{ p.monthlyPremium | number:'1.2-2' }}</span>
+                        <span class="text-muted-color text-sm"> /mo</span>
+                    </td>
+                    <td>
+                        <p-tag [value]="statusLabel(p.isActive)" [severity]="statusSeverity(p.isActive)" />
+                    </td>
+                    <td class="text-surface-600 dark:text-surface-300 text-sm">
+                        {{ p.endDate | date:'mediumDate' }}
+                    </td>
+                    <td>
+                        @if (p.isActive) {
+                            <span [class]="daysRemaining(p.endDate) < 30
+                                ? 'font-semibold text-orange-500'
+                                : 'text-surface-600 dark:text-surface-300'">
+                                {{ daysRemaining(p.endDate) }}d
+                            </span>
+                        } @else {
+                            <span class="text-muted-color">—</span>
+                        }
+                    </td>
+                    <td>
+                        <p-button icon="pi pi-eye" [text]="true" severity="secondary" size="small"
+                                  (onClick)="viewDetail(p)" pTooltip="View details" tooltipPosition="left" />
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    }
+</div>
+
+<!-- ─── Policy Detail Dialog ─────────────────────────────────────────────── -->
+<p-dialog
+    header="Policy Details"
+    [(visible)]="showDetailDialog"
+    [modal]="true"
+    [style]="{width: '520px'}"
+    [draggable]="false">
+
+    @if (selectedPolicy) {
+        <div class="flex flex-col gap-4 pt-2">
+
+            <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800">
+                <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Vehicle</span>
+                <p class="text-xl font-bold text-surface-900 dark:text-surface-0 mt-1 mb-0">
+                    {{ selectedPolicy.vehicleYear }} {{ selectedPolicy.vehicleMake }} {{ selectedPolicy.vehicleModel }}
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800">
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Monthly Premium</span>
+                    <p class="text-2xl font-bold text-primary mt-1 mb-0">
+                        {{ selectedPolicy.currency }} {{ selectedPolicy.monthlyPremium | number:'1.2-2' }}
+                    </p>
+                </div>
+                <div class="p-4 rounded-xl bg-surface-100 dark:bg-surface-800 flex flex-col gap-2">
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Coverage / Status</span>
+                    <div class="flex gap-2 flex-wrap mt-1">
+                        <p-tag [value]="selectedPolicy.coverageType" severity="info" />
+                        <p-tag [value]="statusLabel(selectedPolicy.isActive)"
+                               [severity]="statusSeverity(selectedPolicy.isActive)" />
+                    </div>
+                </div>
+            </div>
+
+            @if (selectedPolicy.isActive) {
+                <div class="flex items-center gap-3 p-4 rounded-xl"
+                     [class]="daysRemaining(selectedPolicy.endDate) < 30
+                         ? 'bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800'
+                         : 'bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800'">
+                    <i [class]="daysRemaining(selectedPolicy.endDate) < 30
+                        ? 'pi pi-exclamation-triangle text-orange-500 text-xl'
+                        : 'pi pi-check-circle text-green-500 text-xl'"></i>
+                    <div>
+                        <p class="font-semibold m-0 text-sm text-surface-900 dark:text-surface-0">
+                            {{ daysRemaining(selectedPolicy.endDate) }} days remaining
+                        </p>
+                        <p class="text-muted-color m-0 text-xs mt-1">
+                            Renews {{ selectedPolicy.endDate | date:'longDate' }}
+                        </p>
+                    </div>
+                </div>
+            }
+
+            <p-divider />
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Start Date</span>
+                    <p class="m-0 font-medium mt-1">{{ selectedPolicy.startDate | date:'mediumDate' }}</p>
+                </div>
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">End Date</span>
+                    <p class="m-0 font-medium mt-1">{{ selectedPolicy.endDate | date:'mediumDate' }}</p>
+                </div>
+            </div>
+
+            <div class="text-xs text-muted-color mt-1">
+                Policy ID: <span class="font-mono">{{ selectedPolicy.id }}</span>
+            </div>
+        </div>
+    }
+</p-dialog>

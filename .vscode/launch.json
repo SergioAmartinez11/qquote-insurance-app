@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "QQuote API (Debug)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-api",
+      "program": "${workspaceFolder}/backend/src/QQuote.Insurance.API/bin/Debug/net10.0/QQuote.Insurance.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/backend/src/QQuote.Insurance.API",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5001"
+      },
+      "console": "internalConsole",
+      "sourceFileMap": {
+        "/app": "${workspaceFolder}"
+      }
+    }
+  ]
+}

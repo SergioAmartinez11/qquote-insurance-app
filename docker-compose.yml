@@ -20,15 +20,15 @@ services:
 
   api:
     build:
-      context: ./backend
-      dockerfile: ../docker/backend.Dockerfile
+      context: .                  # <--- Cambiado a la raíz del proyecto
+      dockerfile: ./docker/backend.Dockerfile  # <--- Ruta relativa desde la raíz
     container_name: qquote-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=qquote_insurance;Username=qquote_user;Password=qquote_pass
     ports:
-      - "5000:8080"
+      - "5001:8080"
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,7 +41,7 @@ services:
       dockerfile: ../../docker/frontend.Dockerfile
     container_name: qquote-frontend
     ports:
-      - "4200:80"
+      - "4201:80"
     depends_on:
       - api
     networks:

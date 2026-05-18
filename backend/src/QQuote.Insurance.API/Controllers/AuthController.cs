@@ -4,7 +4,7 @@ using QQuote.Insurance.Application.Services;
 
 namespace QQuote.Insurance.API.Controllers;
 
-[ApiController]
+
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {

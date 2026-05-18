@@ -1,0 +1,225 @@
+<div class="flex flex-col gap-4">
+
+    <!-- ─── Policy selector + header ─────────────────────────────────────────── -->
+    <div class="card">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 m-0">Claims</h2>
+                <p class="text-muted-color mt-1 mb-0">File and track claims against your active policies</p>
+            </div>
+            <p-button
+                label="File a Claim"
+                icon="pi pi-plus"
+                [disabled]="!selectedPolicyId || loadingPolicies"
+                (onClick)="openCreateDialog()" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="font-medium text-surface-900 dark:text-surface-0">Select Policy</label>
+            <p-select
+                [(ngModel)]="selectedPolicyId"
+                [options]="policyOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Choose a policy to view its claims..."
+                [loading]="loadingPolicies"
+                [fluid]="true"
+                (onChange)="onPolicySelect()" />
+        </div>
+    </div>
+
+    <!-- ─── Claims table ──────────────────────────────────────────────────────── -->
+    @if (selectedPolicyId) {
+        <div class="card">
+            @if (!loadingClaims && claims.length === 0) {
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div style="border-radius: 50%; background: var(--surface-100); width: 72px; height: 72px;"
+                         class="flex items-center justify-center mb-4 dark:bg-surface-800">
+                        <i class="pi pi-inbox text-2xl text-muted-color"></i>
+                    </div>
+                    <h3 class="text-surface-900 dark:text-surface-0 text-lg font-semibold mb-2">No claims for this policy</h3>
+                    <p class="text-muted-color mb-4 max-w-xs text-sm">
+                        If you've had an incident, file a claim and our team will review it.
+                    </p>
+                    <p-button label="File a Claim" icon="pi pi-plus" size="small" (onClick)="openCreateDialog()" />
+                </div>
+            }
+
+            @if (loadingClaims || claims.length > 0) {
+                <p-table
+                    [value]="claims"
+                    [loading]="loadingClaims"
+                    [paginator]="claims.length > 10"
+                    [rows]="10"
+                    responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Incident Date</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Filed</th>
+                            <th style="width: 3rem"></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-c>
+                        <tr>
+                            <td class="font-medium">{{ c.incidentDate | date:'mediumDate' }}</td>
+                            <td>
+                                <span class="text-surface-700 dark:text-surface-300"
+                                      style="display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; max-width: 320px;">
+                                    {{ c.description }}
+                                </span>
+                            </td>
+                            <td>
+                                <p-tag [value]="statusLabel(c.status)" [severity]="statusSeverity(c.status)" />
+                            </td>
+                            <td class="text-surface-600 dark:text-surface-300 text-sm">
+                                {{ c.createdAt | date:'mediumDate' }}
+                            </td>
+                            <td>
+                                <p-button icon="pi pi-eye" [text]="true" severity="secondary" size="small"
+                                          (onClick)="viewDetail(c)" pTooltip="View details" tooltipPosition="left" />
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            }
+        </div>
+    }
+</div>
+
+<!-- ─── File a Claim Dialog ───────────────────────────────────────────────── -->
+<p-dialog
+    header="File a Claim"
+    [(visible)]="showCreateDialog"
+    [modal]="true"
+    [style]="{width: '480px', minHeight: '580px'}"
+    [draggable]="false"
+    [closable]="!creating">
+
+    <div class="flex flex-col gap-5 pt-2">
+
+        @if (selectedPolicy(); as policy) {
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-surface-100 dark:bg-surface-800">
+                <i class="pi pi-shield text-primary text-lg"></i>
+                <div>
+                    <p class="font-semibold m-0 text-sm">
+                        {{ policy.vehicleYear }} {{ policy.vehicleMake }} {{ policy.vehicleModel }}
+                    </p>
+                    <p class="text-muted-color m-0 text-xs">{{ policy.coverageType }} coverage</p>
+                </div>
+            </div>
+        }
+
+        <div class="flex flex-col gap-1">
+            <label class="font-medium text-surface-900 dark:text-surface-0">
+                Incident Date <span class="text-red-400">*</span>
+            </label>
+            <p-datepicker
+                [(ngModel)]="form.incidentDate"
+                [maxDate]="today"
+                [showIcon]="true"
+                [fluid]="true"
+                placeholder="Select incident date"
+                [disabled]="creating" />
+            <span class="text-xs text-muted-color">Cannot be a future date</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label class="font-medium text-surface-900 dark:text-surface-0">
+                Description <span class="text-red-400">*</span>
+            </label>
+            <textarea
+                pTextarea
+                [(ngModel)]="form.description"
+                placeholder="Describe what happened, damage extent, and any relevant details..."
+                [rows]="5"
+                [autoResize]="true"
+                [disabled]="creating"
+                class="w-full"></textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Cancel" [text]="true" severity="secondary"
+                  (onClick)="showCreateDialog = false" [disabled]="creating" />
+        <p-button label="File Claim" icon="pi pi-send"
+                  (onClick)="submitClaim()" [loading]="creating" />
+    </ng-template>
+</p-dialog>
+
+<!-- ─── Claim Detail Dialog ───────────────────────────────────────────────── -->
+<p-dialog
+    header="Claim Details"
+    [(visible)]="showDetailDialog"
+    [modal]="true"
+    [style]="{width: '500px'}"
+    [draggable]="false">
+
+    @if (selectedClaim) {
+        <div class="flex flex-col gap-4 pt-2">
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Status</span>
+                    <div class="mt-2">
+                        <p-tag
+                            [value]="statusLabel(selectedClaim.status)"
+                            [severity]="statusSeverity(selectedClaim.status)" />
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Incident Date</span>
+                    <p class="font-semibold m-0 mt-1">{{ selectedClaim.incidentDate | date:'longDate' }}</p>
+                </div>
+            </div>
+
+            <!-- Status timeline -->
+            <div class="flex items-center gap-0 mt-2">
+                @for (step of ['Reported', 'UnderReview', 'Resolved']; track step; let last = $last) {
+                    <div class="flex items-center" [class.flex-1]="!last">
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                                 [class]="isStepReached(selectedClaim.status, step)
+                                     ? 'bg-primary text-white'
+                                     : 'bg-surface-200 dark:bg-surface-700 text-muted-color'">
+                                <i [class]="stepIcon(step)"></i>
+                            </div>
+                            <span class="text-xs text-muted-color text-center" style="width: 64px">
+                                {{ statusLabel(step) }}
+                            </span>
+                        </div>
+                        @if (!last) {
+                            <div class="flex-1 h-0.5 mx-1 mb-5"
+                                 [class]="isStepReached(selectedClaim.status, step)
+                                     ? 'bg-primary'
+                                     : 'bg-surface-200 dark:bg-surface-700'"></div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <p-divider />
+
+            <div>
+                <span class="text-xs text-muted-color uppercase font-semibold tracking-widest">Description</span>
+                <p class="text-surface-700 dark:text-surface-300 leading-relaxed mt-2 mb-0 text-sm">
+                    {{ selectedClaim.description }}
+                </p>
+            </div>
+
+            <p-divider />
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Filed On</span>
+                    <p class="m-0 font-medium mt-1">{{ selectedClaim.createdAt | date:'medium' }}</p>
+                </div>
+                <div>
+                    <span class="text-muted-color text-xs uppercase tracking-widest font-semibold">Claim ID</span>
+                    <p class="m-0 font-mono text-xs mt-1 truncate">{{ selectedClaim.id }}</p>
+                </div>
+            </div>
+        </div>
+    }
+</p-dialog>
