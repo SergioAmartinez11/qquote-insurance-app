@@ -33,6 +33,7 @@ public static class ServiceExtensions
             opts.UseNpgsql(rawConn);
         });
 
+    
         services.AddScoped<IQuoteRepository,    QuoteRepository>();
         services.AddScoped<ICustomerRepository, CustomerRepository>();
         services.AddScoped<IPolicyRepository,   PolicyRepository>();
