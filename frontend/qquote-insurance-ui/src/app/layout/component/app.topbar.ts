@@ -38,7 +38,7 @@ import { Menu } from "primeng/menu";
                         />
                     </g>
                 </svg>
-                <span>Aura Immex</span>
+                <span>QQuote Insurance</span>
             </a>
         </div>
             <p-breadcrumb [model]="breadcrumbItems()" [home]="breadcrumbHome"></p-breadcrumb>
