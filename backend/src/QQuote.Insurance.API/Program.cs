@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QQuote.Insurance.API.Middleware;
 using QQuote.Insurance.Infrastructure.Common;
@@ -36,6 +35,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<InsuranceDbContext>(); // Default check uses CanConnectAsync()
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
@@ -57,6 +60,7 @@ app.UseSwaggerUI();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 using var migrationScope = app.Services.CreateScope();
 var dbContext = migrationScope.ServiceProvider.GetRequiredService<InsuranceDbContext>();
