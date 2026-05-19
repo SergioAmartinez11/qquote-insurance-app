@@ -4,8 +4,8 @@ A full-stack vehicle insurance platform that lets customers get AI-powered quote
 
 ---
 
-## Production ready version https://qquote-insurance-app.vercel.app
-
+## Deployed demo https://qquote-insurance-app.vercel.app
+## Use of chrome browser is recommended
 
 <img width="1706" height="1025" alt="image" src="https://github.com/user-attachments/assets/3f6b84d0-e666-4da8-9b9c-20b6d873d930" />
 <img width="1706" height="1025" alt="image" src="https://github.com/user-attachments/assets/bacc0792-c899-46e5-907e-4e02d58a50f8" />
