@@ -43,11 +43,41 @@ public class PremiumCalculatorServiceTests
         Assert.True(oldPremium.Amount > newPremium.Amount);
     }
 
-    [Fact]
-    public void Calculate_CurrencyIsPassedThrough()
+    [Theory]
+    [InlineData("USD", 1.00)]
+    [InlineData("EUR", 0.92)]
+    [InlineData("MXN", 17.15)]
+    [InlineData("GBP", 0.79)]
+    public void Calculate_AppliesExchangeRateToUsdBaseAmount(string currency, double rate)
     {
         var vehicle = new Vehicle(DateTime.UtcNow.Year, "Toyota", "Camry");
-        var result = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, "EUR");
-        Assert.Equal("EUR", result.Currency);
+        var result = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, currency);
+
+        var vehicleAgeFactor = 1m + (vehicle.Age() * 0.02m);
+        var expected = Math.Round(50m * vehicleAgeFactor * 1.0m * (decimal)rate, 2);
+
+        Assert.Equal(expected, result.Amount);
+        Assert.Equal(currency, result.Currency);
+    }
+
+    [Fact]
+    public void Calculate_UnknownCurrency_DefaultsToUsdRate()
+    {
+        var vehicle = new Vehicle(DateTime.UtcNow.Year, "Toyota", "Camry");
+        var usd     = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, "USD");
+        var unknown = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, "CHF");
+
+        Assert.Equal(usd.Amount, unknown.Amount);
+        Assert.Equal("CHF", unknown.Currency);
+    }
+
+    [Fact]
+    public void Calculate_MxnPremium_IsSignificantlyHigherThanUsd()
+    {
+        var vehicle = new Vehicle(DateTime.UtcNow.Year, "Toyota", "Camry");
+        var usd = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, "USD");
+        var mxn = _sut.Calculate(CoverageType.Basic, vehicle, RiskLevel.Low, "MXN");
+
+        Assert.True(mxn.Amount > usd.Amount * 10);
     }
 }

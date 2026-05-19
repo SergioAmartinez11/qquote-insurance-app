@@ -16,6 +16,12 @@ public class ClaimRepository : IClaimRepository
     public Task<List<Claim>> GetByPolicyIdAsync(Guid policyId, CancellationToken ct) =>
         _db.Claims.Where(c => c.PolicyId == policyId).ToListAsync(ct);
 
+    public Task<List<Claim>> GetByCustomerIdAsync(Guid customerId, CancellationToken ct) =>
+        _db.Claims
+            .Where(c => _db.Policies.Any(p => p.Id == c.PolicyId && p.CustomerId == customerId))
+            .OrderByDescending(c => c.IncidentDate)
+            .ToListAsync(ct);
+
     public async Task AddAsync(Claim claim, CancellationToken ct) =>
         await _db.Claims.AddAsync(claim, ct);
 

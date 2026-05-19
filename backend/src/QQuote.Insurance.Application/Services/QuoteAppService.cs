@@ -9,19 +9,22 @@ namespace QQuote.Insurance.Application.Services;
 
 public class QuoteAppService
 {
-    private readonly IQuoteRepository        _quoteRepo;
-    private readonly ICustomerRepository     _customerRepo;
-    private readonly IRiskAssessmentService  _riskService;
+    private readonly IQuoteRepository         _quoteRepo;
+    private readonly ICustomerRepository      _customerRepo;
+    private readonly IClaimRepository         _claimRepo;
+    private readonly IRiskAssessmentService   _riskService;
     private readonly PremiumCalculatorService _calculator;
 
     public QuoteAppService(
         IQuoteRepository        quoteRepo,
         ICustomerRepository     customerRepo,
+        IClaimRepository        claimRepo,
         IRiskAssessmentService  riskService,
         PremiumCalculatorService calculator)
     {
         _quoteRepo    = quoteRepo;
         _customerRepo = customerRepo;
+        _claimRepo    = claimRepo;
         _riskService  = riskService;
         _calculator   = calculator;
     }
@@ -37,7 +40,8 @@ public class QuoteAppService
         var vehicle      = new Vehicle(request.VehicleYear, request.VehicleMake, request.VehicleModel);
         var coverageType = CoverageType.From(request.CoverageType);
 
-        var riskResult = await _riskService.AssessAsync(customer, vehicle, ct);
+        var claimsHistory = await _claimRepo.GetByCustomerIdAsync(customerId, ct);
+        var riskResult    = await _riskService.AssessAsync(customer, vehicle, claimsHistory, ct);
         var premium    = _calculator.Calculate(coverageType, vehicle, riskResult.Level, request.Currency);
 
         var quote = Quote.Create(

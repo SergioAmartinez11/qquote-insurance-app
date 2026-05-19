@@ -6,9 +6,10 @@ namespace QQuote.Insurance.Domain.Interfaces;
 public interface IRiskAssessmentService
 {
     Task<RiskAssessmentResult> AssessAsync(
-        Customer          customer,
-        Vehicle           vehicle,
-        CancellationToken ct = default);
+        Customer             customer,
+        Vehicle              vehicle,
+        IReadOnlyList<Claim> claimsHistory,
+        CancellationToken    ct = default);
 }
 
 public record RiskAssessmentResult(RiskLevel Level, string Explanation);
