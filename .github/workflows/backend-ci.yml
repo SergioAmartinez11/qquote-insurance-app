@@ -35,7 +35,7 @@ jobs:
         run: dotnet build QQuote.Insurance.slnx --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test QQuote.Insurance.slnx --no-build --configuration Release --logger "github;short-message=true" --results-directory TestResults
+        run: dotnet test QQuote.Insurance.slnx --no-build --configuration Release --logger "trx;LogFileName=results.trx" --results-directory TestResults
         env:
           DOTNET_ENVIRONMENT: Testing
 
@@ -44,5 +44,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: backend/TestResults/**/*.xml
+          path: backend/TestResults/**/*.trx
           retention-days: 7
