@@ -13,13 +13,15 @@ public class QuoteAppServiceTests
 {
     private readonly IQuoteRepository _quoteRepo = Substitute.For<IQuoteRepository>();
     private readonly ICustomerRepository _customerRepo = Substitute.For<ICustomerRepository>();
+    private readonly IClaimRepository _claimRepo = Substitute.For<IClaimRepository>();
     private readonly IRiskAssessmentService _riskService = Substitute.For<IRiskAssessmentService>();
     private readonly PremiumCalculatorService _calculator = new();
     private readonly QuoteAppService _sut;
 
     public QuoteAppServiceTests()
     {
-        _sut = new QuoteAppService(_quoteRepo, _customerRepo, _riskService, _calculator);
+        _claimRepo.GetByCustomerIdAsync(Arg.Any<Guid>()).Returns(new List<Claim>());
+        _sut = new QuoteAppService(_quoteRepo, _customerRepo, _claimRepo, _riskService, _calculator);
     }
 
     [Fact]
@@ -39,7 +41,7 @@ public class QuoteAppServiceTests
         var customerId = Guid.NewGuid();
         var customer = Customer.Create("John Doe", "john@example.com", "hash", 30, "10001");
         _customerRepo.GetByIdAsync(customerId).Returns(customer);
-        _riskService.AssessAsync(customer, Arg.Any<Vehicle>())
+        _riskService.AssessAsync(customer, Arg.Any<Vehicle>(), Arg.Any<IReadOnlyList<Claim>>())
             .Returns(new RiskAssessmentResult(RiskLevel.Low, "Low risk."));
 
         var request = new CreateQuoteRequest("Toyota", "Camry", 2020, "Basic", "USD");
@@ -51,7 +53,7 @@ public class QuoteAppServiceTests
         Assert.Equal("Basic", result.CoverageType);
         Assert.Equal("Low", result.RiskLevel);
         Assert.Equal("Low risk.", result.RiskExplanation);
-        await _riskService.Received(1).AssessAsync(customer, Arg.Any<Vehicle>());
+        await _riskService.Received(1).AssessAsync(customer, Arg.Any<Vehicle>(), Arg.Any<IReadOnlyList<Claim>>());
         await _quoteRepo.Received(1).AddAsync(Arg.Any<Quote>());
         await _quoteRepo.Received(1).SaveChangesAsync();
     }
@@ -79,6 +81,30 @@ public class QuoteAppServiceTests
         Assert.Equal("Honda", result.VehicleMake);
         Assert.Equal("Comprehensive", result.CoverageType);
         Assert.Equal("Medium", result.RiskLevel);
+    }
+
+    [Fact]
+    public async Task CreateAsync_FetchesClaimsForCustomerAndForwardsToRiskService()
+    {
+        var customerId = Guid.NewGuid();
+        var customer   = Customer.Create("Jane Doe", "jane@example.com", "hash", 35, "90210");
+        var claims     = new List<Claim>
+        {
+            Claim.File(Guid.NewGuid(), DateTime.UtcNow.AddDays(-30),  "Rear-end collision."),
+            Claim.File(Guid.NewGuid(), DateTime.UtcNow.AddDays(-120), "Windshield crack."),
+        };
+        _customerRepo.GetByIdAsync(customerId).Returns(customer);
+        _claimRepo.GetByCustomerIdAsync(customerId).Returns(claims);
+        _riskService.AssessAsync(customer, Arg.Any<Vehicle>(), Arg.Any<IReadOnlyList<Claim>>())
+            .Returns(new RiskAssessmentResult(RiskLevel.High, "High risk."));
+
+        await _sut.CreateAsync(customerId, new CreateQuoteRequest("Ford", "Mustang", 2020, "Comprehensive", "USD"));
+
+        await _claimRepo.Received(1).GetByCustomerIdAsync(customerId);
+        await _riskService.Received(1).AssessAsync(
+            customer,
+            Arg.Any<Vehicle>(),
+            Arg.Is<IReadOnlyList<Claim>>(c => c.Count == 2));
     }
 
     [Fact]

@@ -54,8 +54,9 @@ public class ApiWebAppFactory : WebApplicationFactory<Program>
 internal class FakeRiskAssessmentService : IRiskAssessmentService
 {
     public Task<RiskAssessmentResult> AssessAsync(
-        Customer customer,
-        Vehicle vehicle,
-        CancellationToken ct = default) =>
+        Customer             customer,
+        Vehicle              vehicle,
+        IReadOnlyList<Claim> claimsHistory,
+        CancellationToken    ct = default) =>
         Task.FromResult(new RiskAssessmentResult(RiskLevel.Low, "Low risk."));
 }

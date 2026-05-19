@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\QQuote.Insurance.Application\QQuote.Insurance.Application.csproj" />
     <ProjectReference Include="..\..\src\QQuote.Insurance.Domain\QQuote.Insurance.Domain.csproj" />
+    <ProjectReference Include="..\..\src\QQuote.Insurance.Infrastructure\QQuote.Insurance.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

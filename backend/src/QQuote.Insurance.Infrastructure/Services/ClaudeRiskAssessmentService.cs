@@ -12,9 +12,12 @@ public class ClaudeRiskAssessmentService : IRiskAssessmentService
     public ClaudeRiskAssessmentService(HttpClient http) => _http = http;
 
     public async Task<RiskAssessmentResult> AssessAsync(
-        Customer customer, Vehicle vehicle, CancellationToken ct = default)
+        Customer             customer,
+        Vehicle              vehicle,
+        IReadOnlyList<Claim> claimsHistory,
+        CancellationToken    ct = default)
     {
-        var prompt = RiskPromptBuilder.Build(customer, vehicle);
+        var prompt = RiskPromptBuilder.Build(customer, vehicle, claimsHistory);
 
         var body = new
         {
