@@ -41,4 +41,22 @@ public class Customer
             CreatedAt    = DateTime.UtcNow
         };
     }
+
+    public static Customer CreateFromGoogle(string fullName, string email)
+    {
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+            throw new DomainException("A valid email is required.");
+
+        return new Customer
+        {
+            Id           = Guid.NewGuid(),
+            FullName     = string.IsNullOrWhiteSpace(fullName) ? email.Split('@')[0] : fullName.Trim(),
+            Email        = email.ToLowerInvariant().Trim(),
+            PasswordHash = string.Empty,
+            Age          = 0,
+            ZipCode      = string.Empty,
+            PriorClaims  = 0,
+            CreatedAt    = DateTime.UtcNow
+        };
+    }
 }

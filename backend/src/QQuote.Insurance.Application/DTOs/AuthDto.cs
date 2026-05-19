@@ -9,6 +9,8 @@ public record RegisterRequest(
 
 public record LoginRequest(string Email, string Password);
 
+public record GoogleSignInRequest(string Credential);
+
 public record AuthResponse(
     string   Token,
     string   FullName,

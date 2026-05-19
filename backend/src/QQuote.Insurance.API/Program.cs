@@ -62,8 +62,13 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-using var migrationScope = app.Services.CreateScope();
-var dbContext = migrationScope.ServiceProvider.GetRequiredService<InsuranceDbContext>();
-await dbContext.Database.MigrateAsync();
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    using var migrationScope = app.Services.CreateScope();
+    var dbContext = migrationScope.ServiceProvider.GetRequiredService<InsuranceDbContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 app.Run();
+
+public partial class Program { }
