@@ -52,4 +52,21 @@ public class AuthAppService
         var token = _jwtTokenService.GenerateToken(customer);
         return new AuthResponse(token, customer.FullName, customer.Email, DateTime.UtcNow.AddHours(1));
     }
+
+    public async Task<AuthResponse> GoogleSignInAsync(
+        string            email,
+        string            fullName,
+        CancellationToken ct = default)
+    {
+        var customer = await _customerRepo.GetByEmailAsync(email, ct);
+        if (customer is null)
+        {
+            customer = Customer.CreateFromGoogle(fullName, email);
+            await _customerRepo.AddAsync(customer, ct);
+            await _customerRepo.SaveChangesAsync(ct);
+        }
+
+        var token = _jwtTokenService.GenerateToken(customer);
+        return new AuthResponse(token, customer.FullName, customer.Email, DateTime.UtcNow.AddHours(1));
+    }
 }
