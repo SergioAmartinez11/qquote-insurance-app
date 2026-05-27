@@ -3,9 +3,9 @@ services:
     image: postgres:17-alpine
     container_name: qquote-postgres
     environment:
-      POSTGRES_DB: qquote_insurance
-      POSTGRES_USER: qquote_user
-      POSTGRES_PASSWORD: qquote_pass
+      POSTGRES_DB: ${POSTGRES_DB:-qquote_insurance}
+      POSTGRES_USER: ${POSTGRES_USER:-qquote_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -13,20 +13,20 @@ services:
     networks:
       - qquote-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U qquote_user -d qquote_insurance"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-qquote_user} -d ${POSTGRES_DB:-qquote_insurance}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   api:
     build:
-      context: .                  # <--- Cambiado a la raíz del proyecto
-      dockerfile: ./docker/backend.Dockerfile  # <--- Ruta relativa desde la raíz
+      context: .
+      dockerfile: ./docker/backend.Dockerfile
     container_name: qquote-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=qquote_insurance;Username=qquote_user;Password=qquote_pass
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB:-qquote_insurance};Username=${POSTGRES_USER:-qquote_user};Password=${POSTGRES_PASSWORD}
     ports:
       - "5001:8080"
     depends_on:
