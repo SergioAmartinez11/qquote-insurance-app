@@ -70,6 +70,9 @@ testem.log
 secrets.json
 # appsettings.Development.json is ignored below (per-project); appsettings.Production.json is committed with safe placeholders
 
+# ─── Claude Code ─────────────────────────────────────────────────────────────
+**/.claude/settings.local.json
+
 # ─── IDE / Editors ───────────────────────────────────────────────────────────
 .vscode/*
 !.vscode/settings.json
