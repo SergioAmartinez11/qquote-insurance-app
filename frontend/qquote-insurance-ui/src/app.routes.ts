@@ -3,12 +3,13 @@ import { AppLayout } from './app/layout/component/app.layout';
 import { Landing } from './app/pages/landing/landing';
 import { Notfound } from './app/pages/notfound/notfound';
 import { authGuard } from './app/core/guards/auth.guard';
+import { profileGuard } from './app/core/guards/profile.guard';
 
 export const appRoutes: Routes = [
   {
     path: '',
     component: AppLayout,
-    canActivate: [authGuard],
+    canActivate: [authGuard, profileGuard],
     children: [
       {
         path: '',

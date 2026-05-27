@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
     selector: 'app-footer',
     template: `
         <div class="layout-footer">
-            QQuote &mdash; &copy; 2025 QQuote Insurance. All rights reserved.
+            QQuote &mdash; &copy; 2026 QQuote Insurance. All rights reserved.
         </div>
     `
 })

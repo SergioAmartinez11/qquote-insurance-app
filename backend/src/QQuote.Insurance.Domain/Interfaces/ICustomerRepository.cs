@@ -8,5 +8,6 @@ public interface ICustomerRepository
     Task<Customer?> GetByEmailAsync(string email, CancellationToken ct = default);
     Task<bool>      ExistsByEmailAsync(string email, CancellationToken ct = default);
     Task            AddAsync(Customer customer, CancellationToken ct = default);
+    Task            UpdateAsync(Customer customer, CancellationToken ct = default);
     Task            SaveChangesAsync(CancellationToken ct = default);
 }

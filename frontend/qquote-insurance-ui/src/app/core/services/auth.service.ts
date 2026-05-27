@@ -21,6 +21,12 @@ export interface AuthResponse {
   fullName: string;
   email: string;
   expiresAt: string;
+  requiresProfileCompletion?: boolean;
+}
+
+export interface CompleteProfileRequest {
+  age: number;
+  zipCode: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -47,6 +53,12 @@ export class AuthService {
       .pipe(tap((res) => localStorage.setItem('token', res.token)));
   }
 
+  completeProfile(request: CompleteProfileRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/complete-profile`, request)
+      .pipe(tap((res) => localStorage.setItem('token', res.token)));
+  }
+
   logout(): void {
     localStorage.removeItem('token');
   }
@@ -57,6 +69,17 @@ export class AuthService {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  }
+
+  requiresProfileCompletion(): boolean {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return Number(payload['age']) === 0;
     } catch {
       return false;
     }

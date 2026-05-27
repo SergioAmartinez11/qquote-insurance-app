@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QQuote.Insurance.Application.DTOs;
 using QQuote.Insurance.Application.Services;
@@ -54,6 +56,19 @@ public class AuthController : ControllerBase
         }
 
         var result = await _auth.GoogleSignInAsync(payload.Email, payload.Name ?? string.Empty, ct);
+        return Ok(result);
+    }
+
+    [Authorize]
+    [HttpPost("complete-profile")]
+    public async Task<IActionResult> CompleteProfile(
+        [FromBody] CompleteProfileRequest request, CancellationToken ct)
+    {
+        var idClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+            ?? throw new UnauthorizedException("Invalid token.");
+
+        var customerId = Guid.Parse(idClaim);
+        var result     = await _auth.CompleteProfileAsync(customerId, request, ct);
         return Ok(result);
     }
 }
