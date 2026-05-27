@@ -11,8 +11,11 @@ public record LoginRequest(string Email, string Password);
 
 public record GoogleSignInRequest(string Credential);
 
+public record CompleteProfileRequest(int Age, string ZipCode);
+
 public record AuthResponse(
     string   Token,
     string   FullName,
     string   Email,
-    DateTime ExpiresAt);
+    DateTime ExpiresAt,
+    bool     RequiresProfileCompletion = false);

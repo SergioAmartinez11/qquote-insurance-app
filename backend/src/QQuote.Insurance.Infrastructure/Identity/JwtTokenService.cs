@@ -27,6 +27,7 @@ public class JwtTokenService : IJwtTokenService
             new SecurityClaim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
             new SecurityClaim(ClaimTypes.Email,          customer.Email),
             new SecurityClaim(ClaimTypes.Name,           customer.FullName),
+            new SecurityClaim("age",                     customer.Age.ToString()),
         };
 
         var token = new JwtSecurityToken(

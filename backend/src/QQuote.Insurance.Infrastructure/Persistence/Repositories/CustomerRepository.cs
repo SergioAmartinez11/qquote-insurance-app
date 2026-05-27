@@ -22,6 +22,12 @@ public class CustomerRepository : ICustomerRepository
     public async Task AddAsync(Customer customer, CancellationToken ct) =>
         await _db.Customers.AddAsync(customer, ct);
 
+    public Task UpdateAsync(Customer customer, CancellationToken ct)
+    {
+        _db.Customers.Update(customer);
+        return Task.CompletedTask;
+    }
+
     public Task SaveChangesAsync(CancellationToken ct) =>
         _db.SaveChangesAsync(ct);
 }

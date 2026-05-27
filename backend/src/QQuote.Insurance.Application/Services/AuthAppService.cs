@@ -66,6 +66,23 @@ public class AuthAppService
             await _customerRepo.SaveChangesAsync(ct);
         }
 
+        var token                     = _jwtTokenService.GenerateToken(customer);
+        var requiresProfileCompletion = customer.Age == 0;
+        return new AuthResponse(token, customer.FullName, customer.Email, DateTime.UtcNow.AddHours(1), requiresProfileCompletion);
+    }
+
+    public async Task<AuthResponse> CompleteProfileAsync(
+        Guid                   customerId,
+        CompleteProfileRequest request,
+        CancellationToken      ct = default)
+    {
+        var customer = await _customerRepo.GetByIdAsync(customerId, ct)
+            ?? throw new UnauthorizedException("Customer not found.");
+
+        customer.CompleteProfile(request.Age, request.ZipCode);
+        await _customerRepo.UpdateAsync(customer, ct);
+        await _customerRepo.SaveChangesAsync(ct);
+
         var token = _jwtTokenService.GenerateToken(customer);
         return new AuthResponse(token, customer.FullName, customer.Email, DateTime.UtcNow.AddHours(1));
     }

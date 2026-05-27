@@ -59,4 +59,15 @@ public class Customer
             CreatedAt    = DateTime.UtcNow
         };
     }
+
+    public void CompleteProfile(int age, string zipCode)
+    {
+        if (age < 16 || age > 100)
+            throw new DomainException("Age must be between 16 and 100.");
+        if (string.IsNullOrWhiteSpace(zipCode))
+            throw new DomainException("Zip code is required.");
+
+        Age     = age;
+        ZipCode = zipCode.Trim();
+    }
 }
