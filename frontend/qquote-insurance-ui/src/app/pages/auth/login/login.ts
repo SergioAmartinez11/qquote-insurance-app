@@ -11,6 +11,7 @@ import { AppFloatingConfigurator } from '../../../layout/component/app.floatingc
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { environment } from '../../../../environments/environment';
+import { LoadingOverlayComponent } from '../../../shared/components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +26,7 @@ import { environment } from '../../../../environments/environment';
     RippleModule,
     DividerModule,
     AppFloatingConfigurator,
+    LoadingOverlayComponent,
   ],
   templateUrl: './login.component.html',
 })
@@ -36,6 +38,10 @@ export class Login implements AfterViewInit {
   checked = false;
   loading = false;
   googleLoading = false;
+
+  get isLoading(): boolean {
+    return this.loading || this.googleLoading;
+  }
 
   constructor(
     private authService: AuthService,
