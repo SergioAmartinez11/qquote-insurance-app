@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  NgZone,
+  ViewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -48,6 +55,7 @@ export class Login implements AfterViewInit {
     private router: Router,
     private toast: ToastService,
     private zone: NgZone,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngAfterViewInit(): void {
@@ -82,6 +90,7 @@ export class Login implements AfterViewInit {
 
   private handleGoogleCredential(credential: string): void {
     this.googleLoading = true;
+    this.cdr.detectChanges();
     this.authService.googleSignIn(credential).subscribe({
       next: () => {
         this.googleLoading = false;
@@ -95,6 +104,7 @@ export class Login implements AfterViewInit {
   }
 
   onLogin(): void {
+    if (this.isLoading) return;
     if (!this.email || !this.password) {
       this.toast.warn('Email and password are required.');
       return;
