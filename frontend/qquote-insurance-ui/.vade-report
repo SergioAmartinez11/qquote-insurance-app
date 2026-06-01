@@ -1,0 +1,53 @@
+## Vercel Web Analytics Integration
+
+Successfully installed and configured Vercel Web Analytics for the Angular application.
+
+### Changes Made
+
+**Modified Files:**
+- `package.json` - Added `@vercel/analytics@^2.0.1` as a dependency
+- `package-lock.json` - Updated lock file with new dependency tree
+- `src/main.ts` - Integrated Vercel Analytics using the `inject()` function
+
+### Implementation Details
+
+Since this is an **Angular** application and Vercel Analytics doesn't have official Angular-specific documentation, I used the generic JavaScript integration approach via the `inject()` function from `@vercel/analytics`.
+
+**Integration Approach:**
+1. Installed `@vercel/analytics` package version 2.0.1 using npm with `--legacy-peer-deps` flag (required due to peer dependency conflicts with Angular's Vite version)
+2. Imported the `inject` function in `src/main.ts`
+3. Called `inject()` after bootstrapping the Angular application to initialize analytics tracking
+
+**Why `main.ts`:**
+The `main.ts` file is the application entry point and runs immediately when the app loads, making it the ideal location to initialize Vercel Analytics. This ensures analytics tracking is active throughout the entire application lifecycle.
+
+### Installation Commands Used
+
+```bash
+npm install @vercel/analytics --legacy-peer-deps
+```
+
+The `--legacy-peer-deps` flag was necessary to resolve peer dependency conflicts between Angular's Vite 7.x and some optional peer dependencies in the @vercel/analytics package.
+
+### Build Verification
+
+✅ Build completed successfully (`npm run build`)
+✅ No new errors or warnings introduced
+✅ Application compiles and bundles correctly
+
+### Next Steps
+
+To enable analytics in your Vercel dashboard:
+1. Deploy the application to Vercel
+2. Navigate to your project's Analytics section in the Vercel dashboard
+3. Click "Enable" to activate Web Analytics
+4. Analytics will automatically start collecting page view data
+
+**Note:** Analytics tracking is automatically disabled in development mode and only sends data in production environments.
+
+### Technical Notes
+
+- The integration uses automatic page view tracking
+- Analytics script injection happens client-side
+- No additional configuration needed for basic page view tracking
+- Custom event tracking can be added using the `track()` function from `@vercel/analytics` if needed in the future
